@@ -3,8 +3,6 @@
 name: spring-petclinic
 #test
 on:
-  schedule:
-  - cron: '0 0 * * *' # every night at 12:00AM UTC
   push:
   pull_request_target:
     types:
@@ -16,6 +14,22 @@ permissions:
   pull-requests: write
 
 jobs:
-  minimal:
-    uses: ploigos/ploigos-github-workflows/.github/workflows/minimal.yaml@main
-    secrets: inherit
+  continuous-integration:
+    runs-on: [ubuntu-latest]
+    steps:
+
+      - name: setup-app-clone
+        uses: actions/checkout@v3
+
+      - name: ci-generate-metadata
+        run: psr -s generate-metadata -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
+
+      - name: ci-package-application
+        run: psr -s package -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
+
+      - name: ci-create-container-image
+        run: psr --help
+
+      - name: ci-push-container-image-to-repository
+        run: psr --help
+
