@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   ci-package-application:
+    name: CI: Package Application
     runs-on: [ubuntu-latest]
     steps:
 
@@ -20,13 +21,13 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-        cache: maven
+          cache: maven
 
       - name: Maven Package
         run: mvn --batch-mode --update-snapshots package
 
   ci-create-container-image:
-    name: Push Docker image to Docker Hub
+    name: CI: Create Container Image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
