@@ -114,7 +114,7 @@ jobs:
 
       - name: Download ArgoCD CLI
         run: |
-          if [ -f ./bin/argocd ]; then
+          if [ ! -f ./bin/argocd ]; then
             curl -vL https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
             chmod +x bin/argocd 
           fi
