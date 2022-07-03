@@ -84,6 +84,21 @@ jobs:
     needs: ci-push-container-image-to-repository
     runs-on: ubuntu-latest
     steps:
+      - name: Cache Tools
+        uses: actions/cache@v3
+        with:
+          path: bin
+
+      - name: Download ArgoCD CLI
+        run: |
+          if $(test -f ./bin/argocd); then
+            curl -vL https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
+            chmod +x bin/argocd 
+          fi
+          ./bin/argocd version
+
+      # TODO: create or update argocd application
+
       - name: deploy-or-update-environment-dev
         uses: fjogeleit/yaml-update-action@main # TODO: sha
         with:
