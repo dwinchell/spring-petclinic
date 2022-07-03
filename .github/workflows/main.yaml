@@ -28,6 +28,12 @@ jobs:
       - name: Maven Package
         run: mvn --batch-mode --update-snapshots package
 
+      - uses: actions/upload-artifact@v1
+        with:
+          name: maven-output
+          path: target/
+          
+
   ci-create-container-image:
     name: Create Container Image
     needs: ci-package-application
@@ -35,6 +41,11 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: maven-output
+          path: target/
 
       - name: Buildah Action
         uses: redhat-actions/buildah-build@v2
