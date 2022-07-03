@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   ci-package-application:
-    name: CI: Package Application
+    name: Package Application
     runs-on: [ubuntu-latest]
     steps:
 
@@ -27,7 +27,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots package
 
   ci-create-container-image:
-    name: CI: Create Container Image
+    name: Create Container Image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
