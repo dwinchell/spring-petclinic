@@ -39,7 +39,7 @@ jobs:
   create-and-push-image:
   #ci-create-container-image:
   #  name: Create Container Image
-  #  needs: ci-package-application
+    needs: ci-package-application
     name: Create and Push Container Image
     runs-on: ubuntu-latest
     outputs:
