@@ -11,6 +11,8 @@ permissions:
   pull-requests: write
 
 jobs:
+
+
   ci-package-application:
     name: Package Application
     runs-on: ubuntu-latest
@@ -59,7 +61,8 @@ jobs:
           containerfiles: |
             ./Containerfile
 
-      - run: echo "::notice::${{ needs.job1.outputs.output1 }}"
+      - run: echo "::notice::${{ steps.buildah-build.outputs.image }}"
+
 
   ci-push-container-image-to-repository:
     name: Push Container Image to Repository
@@ -75,9 +78,20 @@ jobs:
           username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
-      #- name: ci-create-container-image
-      #  run: psr --help
 
-      #- name: ci-push-container-image-to-repository
-      #  run: psr --help
+  deploy-or-update-environment-dev:
+    name: Deploy or Update Environment - DEV
+    needs: ci-push-container-image-to-repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy-or-update-environment-dev
+        uses: fjogeleit/yaml-update-action@main # TODO: sha
+        with:
+          valueFile: 'charts/spring-petclinic-deploy/values-DEV.yaml' # TODO: hard coded
+          propertyPath: 'image.tag'
+          value: quay.io/dwinchell/spring-petclinic@latest # TODO: hard coded
+          branch: deployment/foo # TODO: hard coded
+          targetBranch: deployment/bar
+          message: 'Update Image Version to foo' # TODO: hard coded
+          #message: 'Update Image Version to ${{ steps.image.outputs.version }}' 
 
