@@ -119,7 +119,7 @@ jobs:
           ./bin/argocd version
 
       - name: ArgoCD - Login
-        run: argocd login --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+        run: argocd login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
 
         #print("Determine deployment namespace")
 
