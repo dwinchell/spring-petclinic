@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.buidah-build.outputs.image }}
-      tags: ${{ steps.buidah-build.outputs.image }}
+      tags: ${{ steps.buidah-build.outputs.tags }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
