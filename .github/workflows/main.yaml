@@ -3,11 +3,7 @@
 name: spring-petclinic
 #test
 on:
-  pull_request_target:
-    types:
-      - opened
-      - edited
-      - synchronize
+  push:
   workflow_dispatch:
 permissions:
   pull-requests: write
