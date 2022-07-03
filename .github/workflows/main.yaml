@@ -92,6 +92,7 @@ jobs:
         with:
           repository: git@github.com:dwinchell/spring-petclinic-ops.git #TODO
           token: ${{ secrets.OPS_REPO_TOKEN }}
+          ref: main
 
       - name: Update Ops Repo
         uses: fjogeleit/yaml-update-action@main # TODO: sha
