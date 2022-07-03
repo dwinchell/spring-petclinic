@@ -58,13 +58,17 @@ jobs:
   ci-push-container-image-to-repository:
     name: Push Container Image to Repository
     needs: ci-create-container-image
-    uses: redhat-actions/push-to-registry@v2
-    with:
-      image: ${{ steps.ci-create-container-image.outputs.image }}
-      tags: ${{ steps.ci-create-container-image.outputs.tags }}
-      registry: quay.io/dwinchell_redhat
-      username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
-      password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push Container Image to Repository
+        needs: ci-create-container-image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.ci-create-container-image.outputs.image }}
+          tags: ${{ steps.ci-create-container-image.outputs.tags }}
+          registry: quay.io/dwinchell_redhat
+          username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
       #- name: ci-create-container-image
       #  run: psr --help
