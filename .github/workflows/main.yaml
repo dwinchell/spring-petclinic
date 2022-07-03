@@ -88,6 +88,17 @@ jobs:
     needs: create-and-push-image
     runs-on: ubuntu-latest
     steps:
+      - name: Update Ops Repo
+        uses: fjogeleit/yaml-update-action@main # TODO: sha
+        with:
+          valueFile: 'charts/spring-petclinic-deploy/values-DEV.yaml' # TODO: hard coded
+          propertyPath: 'image.tag'
+          value: quay.io/dwinchell/spring-petclinic@latest # TODO: hard coded
+          branch: deployment/foo # TODO: hard coded
+          targetBranch: deployment/bar
+          message: 'Update Image Version to foo' # TODO: hard coded
+          #message: 'Update Image Version to ${{ steps.image.outputs.version }}' 
+
       - name: Cache Tools
         uses: actions/cache@v3
         with:
@@ -101,23 +112,38 @@ jobs:
           fi
           ./bin/argocd version
 
-      - name: deploy-or-update-environment-dev
-        uses: fjogeleit/yaml-update-action@main # TODO: sha
-        with:
-          valueFile: 'charts/spring-petclinic-deploy/values-DEV.yaml' # TODO: hard coded
-          propertyPath: 'image.tag'
-          value: quay.io/dwinchell/spring-petclinic@latest # TODO: hard coded
-          branch: deployment/foo # TODO: hard coded
-          targetBranch: deployment/bar
-          message: 'Update Image Version to foo' # TODO: hard coded
-          #message: 'Update Image Version to ${{ steps.image.outputs.version }}' 
+      - name: ArgoCD - Login
+        run: argocd login --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
 
-      # argocd stuff
-        #print("Sign into ArgoCD")
-        #    print("Add target cluster to ArgoCD")
         #print("Determine deployment namespace")
-        #print(f"Create or update ArgoCD Application ({argocd_app_name})")
-        #print(f"Sync (and wait for) ArgoCD Application ({argocd_app_name})")
+
+      #TODO: hard coded
+      - name: ArgoCD - Create or Update Application
+        run: |
+          argocd app create \
+            spring-petclinic \
+            --repo=git@github.com:dwinchell/spring-petclinic-ops.git \
+            --revision=vanilla \
+            --path=charts/spring-petclinic-deploy/ \
+            --dest-server=https://kubernetes.default.svc \
+            --dest-namespace=vanilla \
+            --sync-policy=automated \
+            --project=default \
+            --upsert
+
+      - name: ArgoCD - Sync
+        run: |
+          argocd app wait \
+              vanilla \
+              --operation \
+              --timeout 60
+          argocd app sync \
+            --async \
+            --timeout 60 \
+            --retry-limit 30 \
+            vanilla
+
+        #TODO: Add outputs
         #    name='argocd-deployed-manifest',
         #    name='deployed-host-urls',
 
