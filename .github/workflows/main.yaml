@@ -88,6 +88,11 @@ jobs:
     needs: create-and-push-image
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: git@github.com:dwinchell/spring-petclinic-ops.git #TODO
+          token: ${{ secrets.OPS_REPO_TOKEN }}
+
       - name: Update Ops Repo
         uses: fjogeleit/yaml-update-action@main # TODO: sha
         with:
