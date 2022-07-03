@@ -28,6 +28,7 @@ jobs:
 
   ci-create-container-image:
     name: Create Container Image
+    needs: ci-package-application
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
