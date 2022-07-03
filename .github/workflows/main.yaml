@@ -14,7 +14,7 @@ permissions:
 jobs:
   ci-package-application:
     name: Package Application
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
 
       - uses: actions/checkout@v3
