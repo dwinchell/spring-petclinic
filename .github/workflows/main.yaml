@@ -36,25 +36,24 @@ jobs:
           path: target/
           
 
-  ci:
+  create-and-push-image:
   #ci-create-container-image:
   #  name: Create Container Image
   #  needs: ci-package-application
-    name: Continuous Integration
+    name: Create and Push Container Image
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.buildah-build.outputs.image }}
       tags: ${{ steps.buildah-build.outputs.tags }}
     steps:
-      - name: Check out the repo
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - uses: actions/download-artifact@v1
         with:
           name: maven-output
           path: target/
 
-      - name: Buildah Action
+      - name: CI - Create Container Image
         id: buildah-build
         uses: redhat-actions/buildah-build@v2
         with:
@@ -72,7 +71,8 @@ jobs:
   #  runs-on: ubuntu-latest
   #  steps:
   #    - run: echo "::notice::${{ needs.ci-create-container-image.outputs.image }}"
-      - uses: redhat-actions/push-to-registry@v2
+      - name: CI - Push Container Image
+        uses: redhat-actions/push-to-registry@v2
         with:
           registry: quay.io/dwinchell_redhat
           #image: ${{ needs.ci-create-container-image.outputs.image }}
@@ -82,10 +82,10 @@ jobs:
           username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
-
   deploy-or-update-environment-dev:
     name: Deploy or Update Environment - DEV
-    needs: ci-push-container-image-to-repository
+    #needs: ci-push-container-image-to-repository
+    needs: create-and-push-image
     runs-on: ubuntu-latest
     steps:
       - name: Cache Tools
