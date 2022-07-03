@@ -2,12 +2,11 @@
 # This Github workflow will run jobs to build java-app.
 name: spring-petclinic
 on:
-  pull_request_target:
-    types:
-      - opened
-      - edited
-      - synchronize
+  push:
   workflow_dispatch:
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   pull-requests: write
 
