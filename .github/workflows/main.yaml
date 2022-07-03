@@ -25,6 +25,20 @@ jobs:
       - name: Maven Package
         run: mvn --batch-mode --update-snapshots package
 
+  ci-create-container-image:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Buildah Action
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: spring-petclinic # TODO: hard coded
+          tags: ${{ github.sha }}
+          containerfiles: |
+            ./Containerfile
 
       #- name: ci-create-container-image
       #  run: psr --help
