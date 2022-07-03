@@ -59,14 +59,14 @@ jobs:
           containerfiles: |
             ./Containerfile
 
-      - run: echo "::notice ${{ needs.job1.outputs.output1 }}::"
+      - run: echo "::notice::${{ needs.job1.outputs.output1 }}"
 
   ci-push-container-image-to-repository:
     name: Push Container Image to Repository
     needs: ci-create-container-image
     runs-on: ubuntu-latest
     steps:
-      - run: echo "::notice ${{ needs.ci-create-container-image.outputs.image }}::"
+      - run: echo "::notice::${{ needs.ci-create-container-image.outputs.image }}"
       - uses: redhat-actions/push-to-registry@v2
         with:
           registry: quay.io/dwinchell_redhat
