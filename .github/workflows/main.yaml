@@ -60,9 +60,7 @@ jobs:
     needs: ci-create-container-image
     runs-on: ubuntu-latest
     steps:
-      - name: Push Container Image to Repository
-        needs: ci-create-container-image
-        uses: redhat-actions/push-to-registry@v2
+      - uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{ steps.ci-create-container-image.outputs.image }}
           tags: ${{ steps.ci-create-container-image.outputs.tags }}
