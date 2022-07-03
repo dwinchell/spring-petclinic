@@ -41,8 +41,8 @@ jobs:
     needs: ci-package-application
     runs-on: ubuntu-latest
     outputs:
-      image: ${{ steps.buidah-build.outputs.image }}
-      tags: ${{ steps.buidah-build.outputs.tags }}
+      image: ${{ steps.buildah-build.outputs.image }}
+      tags: ${{ steps.buildah-build.outputs.image }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
