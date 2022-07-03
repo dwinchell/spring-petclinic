@@ -21,8 +21,8 @@ jobs:
       - name: setup-app-clone
         uses: actions/checkout@v3
 
-      - name: ci-generate-metadata
-        run: psr -s generate-metadata -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
+      #- name: ci-generate-metadata
+      #  run: psr -s generate-metadata -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
 
       - name: ci-package-application
         run: psr -s package -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
