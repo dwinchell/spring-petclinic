@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image: ${{ steps.buildah-build.outputs.image }}
-      tags: ${{ steps.buildah-build.outputs.image }}
+      tags: ${{ steps.buildah-build.outputs.tags }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -97,8 +97,6 @@ jobs:
           fi
           ./bin/argocd version
 
-      # TODO: create or update argocd application
-
       - name: deploy-or-update-environment-dev
         uses: fjogeleit/yaml-update-action@main # TODO: sha
         with:
@@ -109,4 +107,13 @@ jobs:
           targetBranch: deployment/bar
           message: 'Update Image Version to foo' # TODO: hard coded
           #message: 'Update Image Version to ${{ steps.image.outputs.version }}' 
+
+      # argocd stuff
+        #print("Sign into ArgoCD")
+        #    print("Add target cluster to ArgoCD")
+        #print("Determine deployment namespace")
+        #print(f"Create or update ArgoCD Application ({argocd_app_name})")
+        #print(f"Sync (and wait for) ArgoCD Application ({argocd_app_name})")
+        #    name='argocd-deployed-manifest',
+        #    name='deployed-host-urls',
 
