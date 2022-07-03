@@ -9,22 +9,25 @@ permissions:
   pull-requests: write
 
 jobs:
-  continuous-integration:
+  ci-package-application:
     runs-on: [ubuntu-latest]
     steps:
 
-      - name: setup-app-clone
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      #- name: ci-generate-metadata
-      #  run: psr -s generate-metadata -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
 
-      - name: ci-package-application
-        run: psr -s package -c ${{ inputs.stepRunnerConfigDir }}/psr.yaml
+      - name: Maven Package
+        run: mvn --batch-mode --update-snapshots package
 
-      - name: ci-create-container-image
-        run: psr --help
 
-      - name: ci-push-container-image-to-repository
-        run: psr --help
+      #- name: ci-create-container-image
+      #  run: psr --help
+
+      #- name: ci-push-container-image-to-repository
+      #  run: psr --help
 
