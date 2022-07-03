@@ -123,14 +123,14 @@ jobs:
           ./bin/argocd version --client
 
       - name: ArgoCD - Login
-        run: argocd login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+        run: ./bin/argocd login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
 
         #print("Determine deployment namespace")
 
       #TODO: hard coded
       - name: ArgoCD - Create or Update Application
         run: |
-          argocd app create \
+          ./bin/argocd app create \
             spring-petclinic \
             --repo=git@github.com:dwinchell/spring-petclinic-ops.git \
             --revision=vanilla \
@@ -143,11 +143,11 @@ jobs:
 
       - name: ArgoCD - Sync
         run: |
-          argocd app wait \
+          ./bin/argocd app wait \
               vanilla \
               --operation \
               --timeout 60
-          argocd app sync \
+          ./bin/argocd app sync \
             --async \
             --timeout 60 \
             --retry-limit 30 \
