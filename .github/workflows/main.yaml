@@ -117,10 +117,10 @@ jobs:
         run: |
           if [ ! -d ./bin ]; then mkdir bin; fi
           if [ ! -f ./bin/argocd ]; then
-            curl -vL https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
+            curl -L https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
             chmod +x bin/argocd 
           fi
-          ./bin/argocd version
+          ./bin/argocd version --client
 
       - name: ArgoCD - Login
         run: argocd login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
