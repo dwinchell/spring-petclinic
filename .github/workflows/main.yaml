@@ -88,22 +88,23 @@ jobs:
     needs: create-and-push-image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Clone Ops Repo
+        uses: actions/checkout@v3
         with:
           repository: dwinchell/spring-petclinic-ops #TODO
           token: ${{ secrets.OPS_REPO_TOKEN }}
           ref: main
 
-      - name: Update Ops Repo
-        uses: fjogeleit/yaml-update-action@main # TODO: sha
+
+      - name: Update Image Tag
+        uses: mikefarah/yq@master
         with:
-          valueFile: 'charts/spring-petclinic-deploy/values-DEV.yaml' # TODO: hard coded
-          propertyPath: 'image.tag'
-          value: quay.io/dwinchell/spring-petclinic@latest # TODO: hard coded
-          branch: deployment/foo # TODO: hard coded
-          targetBranch: deployment/bar
-          message: 'Update Image Version to foo' # TODO: hard coded
-          #message: 'Update Image Version to ${{ steps.image.outputs.version }}' 
+          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:latest"' 'charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+
+      - name: Push to Feature Branch
+        run: |
+          git checkout -b feature/vanilla # TODO
+          git push -u origin feature/vanilla #TODO
 
       - name: Cache Tools
         uses: actions/cache@v3
