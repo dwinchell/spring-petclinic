@@ -36,6 +36,7 @@ jobs:
           path: target/
           
 
+  #TODO: split into two jobs. Try caching dir specified by buildah bud --root
   create-and-push-image:
   #ci-create-container-image:
   #  name: Create Container Image
@@ -109,11 +110,12 @@ jobs:
       - name: Cache Tools
         uses: actions/cache@v3
         with:
-          path: bin
+          path: ./bin
           key: tools
 
       - name: Download ArgoCD CLI
         run: |
+          if [ ! -d ./bin ]; then mkdir bin; fi
           if [ ! -f ./bin/argocd ]; then
             curl -vL https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
             chmod +x bin/argocd 
