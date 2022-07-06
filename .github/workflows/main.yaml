@@ -86,7 +86,7 @@ jobs:
           #tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile.pipeline-dev
-          extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
 
       - name: debug-after
         run: |
@@ -109,7 +109,7 @@ jobs:
           #tags: ${{ steps.buildah-build.outputs.tags }}
           username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
-          extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
 
 #  deploy-or-update-environment-dev:
 #    name: Deploy or Update Environment - DEV
