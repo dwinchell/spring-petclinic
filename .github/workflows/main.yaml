@@ -17,13 +17,14 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Mock package
         run: |
           mkdir target
           echo "foo" > target/app.jar
 
-#                  #      - uses: actions/checkout@v3
-#                  #
+
 #                  #      - name: Setup Java
 #                  #        uses: actions/setup-java@v3
 #                  #        with:
