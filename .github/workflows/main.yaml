@@ -2,7 +2,7 @@
 # This Github workflow will run jobs to build java-app.
 name: spring-petclinic
 on:
-  push:
+  #push:
   workflow_dispatch:
 concurrency:
   group: ${{ github.ref }}
@@ -93,16 +93,20 @@ jobs:
           token: ${{ secrets.OPS_REPO_TOKEN }}
           ref: main
 
+      - name: Checkout Ops Repo Branch
+        run: |
+          git checkout feature/vanilla #|| git checkout -b feature/vanilla # TODO
+
+
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
           cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:${{ steps.buildah-build.outputs.tags }}"' 'charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
 
-      - name: Push to Ops Repo
+      - name: Commit and Push to Ops Repo
         run: |
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
-          git checkout -b feature/vanilla # TODO
           git commit -am "CI/CD Pipeline - updated image tag"
           git push -u origin feature/vanilla #TODO
 
