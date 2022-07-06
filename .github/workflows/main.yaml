@@ -49,6 +49,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Cache Buildah Root Dir
+        uses: actions/cache@v3
+        with:
+          path: ./buildah-root
+          key: buildah-root
+
+      - name: Cache Buildah Run Root Dir
+        uses: actions/cache@v3
+        with:
+          path: ./buildah-runroot
+          key: buildah-runroot
+
       - uses: actions/download-artifact@v1
         with:
           name: maven-output
@@ -62,6 +74,7 @@ jobs:
           tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile.pipeline-dev
+          extra-args: --root ./buildah-root --runroot ./buildah-runroot
 
 
   #ci-push-container-image-to-repository:
