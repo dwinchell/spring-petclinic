@@ -77,16 +77,19 @@ jobs:
           set -x
           if [ -d $HOME/.local/share/containers ]; then ls -lh $HOME/.local/share/containers; else echo NO DIR; fi
 
-      - name: CI - Create Container Image
-        id: buildah-build
-        uses: redhat-actions/buildah-build@v2
-        with:
-          image: quay.io/dwinchell_redhat/spring-petclinic # TODO: hard coded
-          tags: latest
-          #tags: ${{ github.sha }}
-          containerfiles: |
-            ./Containerfile.pipeline-dev
-          extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+#      - name: CI - Create Container Image
+#        id: buildah-build
+#        uses: redhat-actions/buildah-build@v2
+#        with:
+#          image: quay.io/dwinchell_redhat/spring-petclinic # TODO: hard coded
+#          tags: latest
+#          #tags: ${{ github.sha }}
+#          containerfiles: |
+#            ./Containerfile.pipeline-dev
+#          extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+
+      - name: Manual build
+        run: /usr/bin/buildah bud -f /home/runner/work/spring-petclinic/spring-petclinic/Containerfile.pipeline-dev --format docker --tls-verify=true --root ~/buildah-root --runroot ~/buildah-runroot -t quay.io/dwinchell_redhat/spring-petclinic:latest /home/runner/work/spring-petclinic/spring-petclinic
 
       - name: debug-after
         run: |
@@ -111,7 +114,7 @@ jobs:
 #          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 #          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
       - name: Manual push
-        run: /usr/bin/podman push --root ~/buildah-root --runroot ~/buildah-runroot --quiet --digestfile quay.io-dwinchell_redhat-spring-petclinic-latest_digest.txt quay.io/${{ secrets.CONTAINER_REGISTRY_USERNAME }}/spring-petclinic:latest --tls-verify=true --creds=${{ secrets.CONTAINER_REGISTRY_USERNAME }}:${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+        run: /usr/bin/podman push --root ~/buildah-root --runroot ~/buildah-runroot --quiet quay.io/dwinchell_redhat/spring-petclinic:latest --creds=${{ secrets.CONTAINER_REGISTRY_USERNAME }}:${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
 #  deploy-or-update-environment-dev:
 #    name: Deploy or Update Environment - DEV
