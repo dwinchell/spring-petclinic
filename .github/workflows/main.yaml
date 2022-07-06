@@ -130,9 +130,10 @@ jobs:
       #TODO: hard coded
       - name: ArgoCD - Create or Update Application
         run: |
+          # TODO: make it work for a private repository
           ./bin/argocd --insecure app create \
             spring-petclinic \
-            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \ # TODO: make it work for a private repository
+            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \
             --revision=vanilla \
             --path=charts/spring-petclinic-deploy/ \
             --dest-server=https://kubernetes.default.svc \
