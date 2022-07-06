@@ -98,18 +98,20 @@ jobs:
   #  needs: ci-create-container-image
   #  runs-on: ubuntu-latest
   #  steps:
-      - name: CI - Push Container Image
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          #image: ${{ needs.ci-create-container-image.outputs.image }}
-          #tags: ${{ needs.ci-create-container-image.outputs.tags }}
-          #image: quay.io/dwinchell_redhat/spring-petclinic:${{ github.sha }}
-          tags: quay.io/dwinchell_redhat/spring-petclinic:latest
-          #image: ${{ steps.buildah-build.outputs.image }}
-          #tags: ${{ steps.buildah-build.outputs.tags }}
-          username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
-          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
-          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+#      - name: CI - Push Container Image
+#        uses: redhat-actions/push-to-registry@v2
+#        with:
+#          #image: ${{ needs.ci-create-container-image.outputs.image }}
+#          #tags: ${{ needs.ci-create-container-image.outputs.tags }}
+#          #image: quay.io/dwinchell_redhat/spring-petclinic:${{ github.sha }}
+#          tags: quay.io/dwinchell_redhat/spring-petclinic:latest
+#          #image: ${{ steps.buildah-build.outputs.image }}
+#          #tags: ${{ steps.buildah-build.outputs.tags }}
+#          username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+#          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+#          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+      - name: Manual push
+        run: podman --root ~/buildah-root --runroot ~/buildah-runroot --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs pull docker-daemon:quay.io/dwinchell_redhat/spring-petclinic:latest
 
 #  deploy-or-update-environment-dev:
 #    name: Deploy or Update Environment - DEV
