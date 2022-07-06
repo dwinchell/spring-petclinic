@@ -86,7 +86,7 @@ jobs:
           #tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile.pipeline-dev
-          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
+          extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
 
       - name: debug-after
         run: |
