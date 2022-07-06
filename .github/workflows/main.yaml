@@ -84,6 +84,17 @@ jobs:
             ./Containerfile.pipeline-dev
           extra-args: --root ./buildah-root --runroot ./buildah-runroot
 
+      - name: debug-more
+        run: |
+          set -x
+          echo afer build
+          ls /var/lib/containers/storage
+          echo XDG_DATA_HOME $XDG_DATA_HOME
+          ls $XDG_DATA_HOME/containers/storage
+          ls $HOME/.local/share/containers
+          ls ./buildah-root
+          ls ./buildah-runroot
+
 
   #ci-push-container-image-to-repository:
   #  name: Push Container Image to Repository
