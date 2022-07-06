@@ -134,7 +134,7 @@ jobs:
             --revision=feature/vanilla \
             --path=charts/spring-petclinic-deploy/ \
             --dest-server=https://kubernetes.default.svc \
-            --dest-namespace=feature/vanilla \
+            --dest-namespace=feature-vanilla \
             --sync-policy=automated \
             --project=default \
             --upsert
