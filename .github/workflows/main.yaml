@@ -99,7 +99,7 @@ jobs:
         with:
           cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:latest"' 'charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
 
-      - name: Push to Feature Branch
+      - name: Push to Ops Repo
         run: |
           git checkout -b feature/vanilla # TODO
           git push -u origin feature/vanilla #TODO
