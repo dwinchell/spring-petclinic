@@ -61,7 +61,7 @@ jobs:
           image: spring-petclinic # TODO: hard coded
           tags: ${{ github.sha }}
           containerfiles: |
-            ./Containerfile
+            ./Containerfile.pipeline-dev
 
 
   #ci-push-container-image-to-repository:
