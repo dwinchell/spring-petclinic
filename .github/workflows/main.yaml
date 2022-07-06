@@ -100,7 +100,6 @@ jobs:
       - name: CI - Push Container Image
         uses: redhat-actions/push-to-registry@v2
         with:
-          registry: quay.io/dwinchell_redhat
           #image: ${{ needs.ci-create-container-image.outputs.image }}
           #tags: ${{ needs.ci-create-container-image.outputs.tags }}
           image: quay.io/dwinchell_redhat/spring-petclinic:${{ github.sha }}
