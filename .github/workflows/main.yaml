@@ -107,85 +107,85 @@ jobs:
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
           #extra-args: --root ./buildah-root --runroot ./buildah-runroot
 
-  deploy-or-update-environment-dev:
-    name: Deploy or Update Environment - DEV
-    #needs: ci-push-container-image-to-repository
-    needs: create-and-push-image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Clone Ops Repo
-        uses: actions/checkout@v3
-        with:
-          repository: dwinchell/spring-petclinic-ops #TODO
-          token: ${{ secrets.OPS_REPO_TOKEN }}
-          ref: main
-
-      - name: Checkout Ops Repo Branch
-        run: |
-          git checkout -B feature/vanilla
-          git pull # TODO: don't always need to do that
-
-      - name: Update Image Tag
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:${{ steps.buildah-build.outputs.tags }}"' 'charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
-
-      - name: Commit and Push to Ops Repo
-        run: |
-          git config --global user.email "cicd@example.com"
-          git config --global user.name "CI/CD Pipeline"
-          git commit -am "CI/CD Pipeline - updated image tag"
-          git push -u origin feature/vanilla #TODO
-
-      - name: Cache Tools
-        uses: actions/cache@v3
-        with:
-          path: ./bin
-          key: tools
-
-      - name: Download ArgoCD CLI
-        run: |
-          if [ ! -d ./bin ]; then mkdir bin; fi
-          if [ ! -f ./bin/argocd ]; then
-            curl -L https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
-            chmod +x bin/argocd 
-          fi
-          ./bin/argocd --insecure version --client #TODO: tls ca
-
-      - name: ArgoCD - Login
-        run: ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
-
-        #print("Determine deployment namespace")
-
-      #TODO: hard coded
-      - name: ArgoCD - Create or Update Application
-        run: |
-          # TODO: make it work for a private repository
-          ./bin/argocd --insecure app create \
-            spring-petclinic \
-            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \
-            --revision=feature/vanilla \
-            --path=charts/spring-petclinic-deploy/ \
-            --dest-server=https://kubernetes.default.svc \
-            --dest-namespace=feature-vanilla \
-            --sync-policy=automated \
-            --project=default \
-            --values=values-DEV.yaml \
-            --upsert
-
-      - name: ArgoCD - Sync
-        run: |
-          ./bin/argocd --insecure app wait \
-              spring-petclinic \
-              --operation \
-              --timeout 60
-          ./bin/argocd --insecure app sync \
-            --async \
-            --timeout 60 \
-            --retry-limit 30 \
-            spring-petclinic
-
-        #TODO: Add outputs
-        #    name='argocd-deployed-manifest',
-        #    name='deployed-host-urls',
-
+#  deploy-or-update-environment-dev:
+#    name: Deploy or Update Environment - DEV
+#    #needs: ci-push-container-image-to-repository
+#    needs: create-and-push-image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Clone Ops Repo
+#        uses: actions/checkout@v3
+#        with:
+#          repository: dwinchell/spring-petclinic-ops #TODO
+#          token: ${{ secrets.OPS_REPO_TOKEN }}
+#          ref: main
+#
+#      - name: Checkout Ops Repo Branch
+#        run: |
+#          git checkout -B feature/vanilla
+#          git pull # TODO: don't always need to do that
+#
+#      - name: Update Image Tag
+#        uses: mikefarah/yq@master
+#        with:
+#          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:${{ steps.buildah-build.outputs.tags }}"' 'charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+#
+#      - name: Commit and Push to Ops Repo
+#        run: |
+#          git config --global user.email "cicd@example.com"
+#          git config --global user.name "CI/CD Pipeline"
+#          git commit -am "CI/CD Pipeline - updated image tag"
+#          git push -u origin feature/vanilla #TODO
+#
+#      - name: Cache Tools
+#        uses: actions/cache@v3
+#        with:
+#          path: ./bin
+#          key: tools
+#
+#      - name: Download ArgoCD CLI
+#        run: |
+#          if [ ! -d ./bin ]; then mkdir bin; fi
+#          if [ ! -f ./bin/argocd ]; then
+#            curl -L https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
+#            chmod +x bin/argocd 
+#          fi
+#          ./bin/argocd --insecure version --client #TODO: tls ca
+#
+#      - name: ArgoCD - Login
+#        run: ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+#
+#        #print("Determine deployment namespace")
+#
+#      #TODO: hard coded
+#      - name: ArgoCD - Create or Update Application
+#        run: |
+#          # TODO: make it work for a private repository
+#          ./bin/argocd --insecure app create \
+#            spring-petclinic \
+#            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \
+#            --revision=feature/vanilla \
+#            --path=charts/spring-petclinic-deploy/ \
+#            --dest-server=https://kubernetes.default.svc \
+#            --dest-namespace=feature-vanilla \
+#            --sync-policy=automated \
+#            --project=default \
+#            --values=values-DEV.yaml \
+#            --upsert
+#
+#      - name: ArgoCD - Sync
+#        run: |
+#          ./bin/argocd --insecure app wait \
+#              spring-petclinic \
+#              --operation \
+#              --timeout 60
+#          ./bin/argocd --insecure app sync \
+#            --async \
+#            --timeout 60 \
+#            --retry-limit 30 \
+#            spring-petclinic
+#
+#        #TODO: Add outputs
+#        #    name='argocd-deployed-manifest',
+#        #    name='deployed-host-urls',
+#
