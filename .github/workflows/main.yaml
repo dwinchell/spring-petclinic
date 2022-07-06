@@ -103,7 +103,7 @@ jobs:
           #image: ${{ needs.ci-create-container-image.outputs.image }}
           #tags: ${{ needs.ci-create-container-image.outputs.tags }}
           #image: quay.io/dwinchell_redhat/spring-petclinic:${{ github.sha }}
-          image: quay.io/myorg/myimage:latest
+          tags: quay.io/my-namespace/my-image:v1
           #image: ${{ steps.buildah-build.outputs.image }}
           #tags: ${{ steps.buildah-build.outputs.tags }}
           username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
