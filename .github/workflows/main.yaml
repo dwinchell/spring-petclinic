@@ -28,7 +28,7 @@ jobs:
           cache: maven
 
       - name: Maven Package
-        run: mvn --batch-mode --update-snapshots package
+        run: mvn -DskipTests --batch-mode --update-snapshots package #TODO: enable tests
 
       - uses: actions/upload-artifact@v1
         with:
@@ -93,7 +93,6 @@ jobs:
           token: ${{ secrets.OPS_REPO_TOKEN }}
           ref: main
 
-
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
@@ -102,6 +101,7 @@ jobs:
       - name: Push to Ops Repo
         run: |
           git checkout -b feature/vanilla # TODO
+          git commit -am "CI/CD Pipeline - updated image tag"
           git push -u origin feature/vanilla #TODO
 
       - name: Cache Tools
