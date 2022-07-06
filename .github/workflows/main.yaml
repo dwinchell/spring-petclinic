@@ -53,12 +53,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-#      - name: Cache Buildah Root Dir
-#        uses: actions/cache@v3
-#        with:
-#          path: ./buildah-root
-#          key: buildah-root
-#
+      - name: Cache Buildah Root Dir
+        uses: actions/cache@v3
+        with:
+          path: $HOME/.local/share/containers
+          key: buildah-root
+
 #      - name: Cache Buildah Run Root Dir
 #        uses: actions/cache@v3
 #        with:
@@ -70,6 +70,11 @@ jobs:
           name: maven-output
           path: target/
 
+      - name: debug-before
+        run: |
+          set -x
+          ls -lh $HOME/.local/share/containers
+
       - name: CI - Create Container Image
         id: buildah-build
         uses: redhat-actions/buildah-build@v2
@@ -80,28 +85,22 @@ jobs:
             ./Containerfile.pipeline-dev
           #extra-args: --root ./buildah-root --runroot ./buildah-runroot
 
-      - name: debug-before
+      - name: debug-after
         run: |
           set -x
-          #ls /var/lib/containers/storage
-          #echo XDG_DATA_HOME $XDG_DATA_HOME
-          #ls $XDG_DATA_HOME/containers/storage
-          ls $HOME/.local/share/containers
-          ls ./buildah-root
-          ls ./buildah-runroot
+          ls -lh $HOME/.local/share/containers
 
 
-
-      - name: debug-more
-        run: |
-          set -x
-          #ls /var/lib/containers/storage
-          #echo XDG_DATA_HOME $XDG_DATA_HOME
-          #ls $XDG_DATA_HOME/containers/storage
-          ls $HOME/.local/share/containers
-          ls ./buildah-root
-          ls ./buildah-runroot
-
+#      - name: debug-more
+#        run: |
+#          set -x
+#          #ls /var/lib/containers/storage
+#          #echo XDG_DATA_HOME $XDG_DATA_HOME
+#          #ls $XDG_DATA_HOME/containers/storage
+#          ls $HOME/.local/share/containers
+#          ls ./buildah-root
+#          ls ./buildah-runroot
+#
 
   #ci-push-container-image-to-repository:
   #  name: Push Container Image to Repository
