@@ -2,7 +2,7 @@
 # This Github workflow will run jobs to build java-app.
 name: spring-petclinic
 on:
-  #push:
+  push:
   workflow_dispatch:
 concurrency:
   group: ${{ github.ref }}
@@ -48,6 +48,14 @@ jobs:
       tags: ${{ steps.buildah-build.outputs.tags }}
     steps:
       - uses: actions/checkout@v3
+
+      - name: debug
+        run: |
+          whoami
+          ls /var/lib/containers/storage
+          echo XDG_DATA_HOME $XDG_DATA_HOME
+          ls $XDG_DATA_HOME/containers/storage
+          ls $HOME/.local/share/containers
 
       - name: Cache Buildah Root Dir
         uses: actions/cache@v3
