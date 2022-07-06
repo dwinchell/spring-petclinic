@@ -100,6 +100,8 @@ jobs:
 
       - name: Push to Ops Repo
         run: |
+          git config --global user.email "cicd@example.com"
+          git config --global user.name "CI/CD Pipeline"
           git checkout -b feature/vanilla # TODO
           git commit -am "CI/CD Pipeline - updated image tag"
           git push -u origin feature/vanilla #TODO
