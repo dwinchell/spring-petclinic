@@ -17,19 +17,23 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     steps:
+      - name: Mock package
+        run: |
+          mkdir target
+          echo "foo" > target/app.jar
 
-      - uses: actions/checkout@v3
-
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-          cache: maven
-
-      - name: Maven Package
-        run: mvn -DskipTests --batch-mode --update-snapshots package #TODO: enable tests
-
+#      - uses: actions/checkout@v3
+#
+#      - name: Setup Java
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11'
+#          distribution: 'adopt'
+#          cache: maven
+#
+#      - name: Maven Package
+#        run: mvn -DskipTests --batch-mode --update-snapshots package #TODO: enable tests
+#
       - uses: actions/upload-artifact@v1
         with:
           name: maven-output
@@ -61,10 +65,10 @@ jobs:
 #          path: ./buildah-runroot
 #          key: buildah-runroot
 #
-#      - uses: actions/download-artifact@v1
-#        with:
-#          name: maven-output
-#          path: target/
+      - uses: actions/download-artifact@v1
+        with:
+          name: maven-output
+          path: target/
 
       - name: CI - Create Container Image
         id: buildah-build
