@@ -132,7 +132,7 @@ jobs:
         run: |
           ./bin/argocd --insecure app create \
             spring-petclinic \
-            --repo=git@github.com:dwinchell/spring-petclinic-ops.git \
+            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \ # TODO: make it work for a private repository
             --revision=vanilla \
             --path=charts/spring-petclinic-deploy/ \
             --dest-server=https://kubernetes.default.svc \
