@@ -53,10 +53,9 @@ jobs:
         run: |
           set -x
           whoami
-          echo afer build
           #ls /var/lib/containers/storage
-          echo XDG_DATA_HOME $XDG_DATA_HOME
-          ls $XDG_DATA_HOME/containers/storage
+          #echo XDG_DATA_HOME $XDG_DATA_HOME
+          #ls $XDG_DATA_HOME/containers/storage
           ls $HOME/.local/share/containers
           ls ./buildah-root
           ls ./buildah-runroot
@@ -91,10 +90,9 @@ jobs:
       - name: debug-more
         run: |
           set -x
-          echo afer build
           #ls /var/lib/containers/storage
-          echo XDG_DATA_HOME $XDG_DATA_HOME
-          ls $XDG_DATA_HOME/containers/storage
+          #echo XDG_DATA_HOME $XDG_DATA_HOME
+          #ls $XDG_DATA_HOME/containers/storage
           ls $HOME/.local/share/containers
           ls ./buildah-root
           ls ./buildah-runroot
