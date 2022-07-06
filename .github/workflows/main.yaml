@@ -73,7 +73,7 @@ jobs:
       - name: debug-before
         run: |
           set -x
-          ls -lh $HOME/.local/share/containers
+          if [ -d $HOME/.local/share/containers ]; then ls -lh $HOME/.local/share/containers; else echo NO DIR; fi
 
       - name: CI - Create Container Image
         id: buildah-build
