@@ -49,13 +49,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: debug
+      - name: debug-before
         run: |
+          set -x
           whoami
-          ls /var/lib/containers/storage
+          echo afer build
+          #ls /var/lib/containers/storage
           echo XDG_DATA_HOME $XDG_DATA_HOME
           ls $XDG_DATA_HOME/containers/storage
           ls $HOME/.local/share/containers
+          ls ./buildah-root
+          ls ./buildah-runroot
 
       - name: Cache Buildah Root Dir
         uses: actions/cache@v3
@@ -88,7 +92,7 @@ jobs:
         run: |
           set -x
           echo afer build
-          ls /var/lib/containers/storage
+          #ls /var/lib/containers/storage
           echo XDG_DATA_HOME $XDG_DATA_HOME
           ls $XDG_DATA_HOME/containers/storage
           ls $HOME/.local/share/containers
