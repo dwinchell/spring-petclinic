@@ -111,7 +111,7 @@ jobs:
 #          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 #          #extra-args: --root ~/buildah-root --runroot ~/buildah-runroot
       - name: Manual push
-        run: podman --root ~/buildah-root --runroot ~/buildah-runroot --storage-opt overlay.mount_program=/usr/bin/fuse-overlayfs pull docker-daemon:quay.io/dwinchell_redhat/spring-petclinic:latest
+        run: /usr/bin/podman push --quiet --digestfile quay.io-dwinchell_redhat-spring-petclinic-latest_digest.txt quay.io/dwinchell_redhat/spring-petclinic:latest quay.io/dwinchell_redhat/spring-petclinic:latest --tls-verify=true --creds=${{ secrets.CONTAINER_REGISTRY_USERNAME }}:${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
 #  deploy-or-update-environment-dev:
 #    name: Deploy or Update Environment - DEV
