@@ -142,14 +142,14 @@ jobs:
       - name: ArgoCD - Sync
         run: |
           ./bin/argocd --insecure app wait \
-              vanilla \
+              spring-petclinic \
               --operation \
               --timeout 60
           ./bin/argocd --insecure app sync \
             --async \
             --timeout 60 \
             --retry-limit 30 \
-            vanilla
+            spring-petclinic
 
         #TODO: Add outputs
         #    name='argocd-deployed-manifest',
