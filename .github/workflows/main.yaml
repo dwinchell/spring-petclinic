@@ -137,6 +137,7 @@ jobs:
             --dest-namespace=feature-vanilla \
             --sync-policy=automated \
             --project=default \
+            --values=values-DEV.yaml \
             --upsert
 
       - name: ArgoCD - Sync
