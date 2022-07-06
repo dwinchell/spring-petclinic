@@ -131,10 +131,10 @@ jobs:
           ./bin/argocd --insecure app create \
             spring-petclinic \
             --repo=https://github.com/dwinchell/spring-petclinic-ops.git \
-            --revision=vanilla \
+            --revision=feature/vanilla \
             --path=charts/spring-petclinic-deploy/ \
             --dest-server=https://kubernetes.default.svc \
-            --dest-namespace=vanilla \
+            --dest-namespace=feature/vanilla \
             --sync-policy=automated \
             --project=default \
             --upsert
