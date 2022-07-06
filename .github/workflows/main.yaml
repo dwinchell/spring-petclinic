@@ -49,33 +49,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: debug-before
-        run: |
-          set -x
-          whoami
-          #ls /var/lib/containers/storage
-          #echo XDG_DATA_HOME $XDG_DATA_HOME
-          #ls $XDG_DATA_HOME/containers/storage
-          ls $HOME/.local/share/containers
-          ls ./buildah-root
-          ls ./buildah-runroot
-
-      - name: Cache Buildah Root Dir
-        uses: actions/cache@v3
-        with:
-          path: ./buildah-root
-          key: buildah-root
-
-      - name: Cache Buildah Run Root Dir
-        uses: actions/cache@v3
-        with:
-          path: ./buildah-runroot
-          key: buildah-runroot
-
-      - uses: actions/download-artifact@v1
-        with:
-          name: maven-output
-          path: target/
+#      - name: Cache Buildah Root Dir
+#        uses: actions/cache@v3
+#        with:
+#          path: ./buildah-root
+#          key: buildah-root
+#
+#      - name: Cache Buildah Run Root Dir
+#        uses: actions/cache@v3
+#        with:
+#          path: ./buildah-runroot
+#          key: buildah-runroot
+#
+#      - uses: actions/download-artifact@v1
+#        with:
+#          name: maven-output
+#          path: target/
 
       - name: CI - Create Container Image
         id: buildah-build
@@ -85,7 +74,19 @@ jobs:
           tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile.pipeline-dev
-          extra-args: --root ./buildah-root --runroot ./buildah-runroot
+          #extra-args: --root ./buildah-root --runroot ./buildah-runroot
+
+      - name: debug-before
+        run: |
+          set -x
+          #ls /var/lib/containers/storage
+          #echo XDG_DATA_HOME $XDG_DATA_HOME
+          #ls $XDG_DATA_HOME/containers/storage
+          ls $HOME/.local/share/containers
+          ls ./buildah-root
+          ls ./buildah-runroot
+
+
 
       - name: debug-more
         run: |
