@@ -95,7 +95,7 @@ jobs:
 
       - name: Checkout Ops Repo Branch
         run: |
-          git checkout feature/vanilla || git checkout -b feature/vanilla # TODO
+          git checkout -B feature/vanilla
           git pull # TODO: don't always need to do that
 
       - name: Update Image Tag
