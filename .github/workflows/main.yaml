@@ -92,19 +92,22 @@ jobs:
           repository: dwinchell/spring-petclinic-ops #TODO
           token: ${{ secrets.OPS_REPO_TOKEN }}
           ref: main
+          path: spring-petclinic-ops #TODO
 
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:latest"' 'charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:latest"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
 
       - name: Push to Ops Repo
         run: |
+          cd spring-petclinic-ops #TODO
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
           git checkout -b feature/vanilla # TODO
           git commit -am "CI/CD Pipeline - updated image tag"
           git push -u origin feature/vanilla #TODO
+          cd ..
 
       - name: Cache Tools
         uses: actions/cache@v3
