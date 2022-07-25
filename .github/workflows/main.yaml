@@ -104,7 +104,7 @@ jobs:
           cd spring-petclinic-ops #TODO
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
-          git checkout -b feature/vanilla # TODO
+          git checkout -B feature/vanilla # TODO
           git commit -am "CI/CD Pipeline - updated image tag"
           git push -u origin feature/vanilla #TODO
           cd ..
