@@ -91,7 +91,7 @@ jobs:
         with:
           repository: dwinchell/spring-petclinic-ops #TODO
           token: ${{ secrets.OPS_REPO_TOKEN }}
-          ref: main
+          ref: feature/vanilla #TODO: deal with -ops feature branch already existing OR not existing
           path: spring-petclinic-ops #TODO
 
       - name: Update Image Tag
