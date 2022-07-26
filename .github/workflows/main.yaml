@@ -141,7 +141,7 @@ jobs:
           # TODO: make it work for a private repository
           ./bin/argocd --insecure app create \
             ${APP_NAME} \
-            --repo=${OPS_REPO_NAME} \ #TODO
+            --repo=${OPS_REPO_NAME} \
             --revision=${GITHUB_REF_NAME} \
             --path=charts/deploy/ \
             --dest-server=https://kubernetes.default.svc \
