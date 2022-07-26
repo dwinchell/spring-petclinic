@@ -22,14 +22,13 @@ jobs:
           echo ${MY_GITHUB_REPOSITORY}
           echo ${MY_GITHUB_REF_NAME}
           APP_NAME=$(echo "${MY_GITHUB_REPOSITORY}-${MY_GITHUB_REF_NAME}" | sed 's!/!-!g')
-          echo ${APP_NAME}
-          #echo ${GITHUB_REF_NAME}
-          #echo ${REPO_NAME}
-          #echo ${GITHUB_REPOSITORY}
+          OPS_REPO_NAME=$(echo "${REPOSITORY_URL" | sed 's/\.git/-ops.git')
+          echo ${OPS_REPO_NAME}
         env:
           #REPO_NAME: ${{ github.event.repository.name }}
           MY_GITHUB_REPOSITORY: ${{ github.repository }}
           MY_GITHUB_REF_NAME: ${{ github.ref_name }}
+          REPOSITORY_URL: ${{ github.repositoryUrl }}
  
       - uses: actions/checkout@v3
 
@@ -139,10 +138,11 @@ jobs:
         run: |
           ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
           APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
+          OPS_REPO_NAME=$(echo "${REPOSITORY_URL" | sed 's/\.git/-ops.git')
           # TODO: make it work for a private repository
           ./bin/argocd --insecure app create \
             ${APP_NAME} \
-            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \ #TODO
+            --repo=${OPS_REPO_NAME} \ #TODO
             --revision=${GITHUB_REF_NAME} \
             --path=charts/deploy/ \
             --dest-server=https://kubernetes.default.svc \
@@ -160,6 +160,8 @@ jobs:
             --timeout 60 \
             --retry-limit 30 \
             ${APP_NAME}
+        env:
+          REPOSITORY_URL: ${{ github.repositoryUrl }}
 
         #TODO: Add outputs
         #    name='argocd-deployed-manifest',
