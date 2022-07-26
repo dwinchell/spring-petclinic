@@ -129,38 +129,31 @@ jobs:
           fi
           ./bin/argocd --insecure version --client #TODO: tls ca
 
-      - name: ArgoCD - Login
-        run: ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
-
-        #print("Determine deployment namespace")
-
-      #TODO: hard coded
-      - name: ArgoCD - Create or Update Application
+      - name: ArgoCD - Create or Update Application and Sync
         run: |
+          ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+          APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
           # TODO: make it work for a private repository
           ./bin/argocd --insecure app create \
-            spring-petclinic \
-            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \
-            --revision=feature/vanilla \
-            --path=charts/spring-petclinic-deploy/ \
+            ${APP_NAME} \
+            --repo=https://github.com/dwinchell/spring-petclinic-ops.git \ #TODO
+            --revision=${GITHUB_REF_NAME} \
+            --path=charts/deploy/ \
             --dest-server=https://kubernetes.default.svc \
-            --dest-namespace=feature-vanilla \
+            --dest-namespace=${APP_NAME}
             --sync-policy=automated \
             --project=default \
             --values=values-DEV.yaml \
             --upsert
-
-      - name: ArgoCD - Sync
-        run: |
           ./bin/argocd --insecure app wait \
-              spring-petclinic \
+              ${APP_NAME} \
               --operation \
               --timeout 60
           ./bin/argocd --insecure app sync \
             --async \
             --timeout 60 \
             --retry-limit 30 \
-            spring-petclinic
+            ${APP_NAME}
 
         #TODO: Add outputs
         #    name='argocd-deployed-manifest',
