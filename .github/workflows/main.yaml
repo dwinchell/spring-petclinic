@@ -38,8 +38,6 @@ jobs:
 
   #TODO: split into two jobs. Try caching dir specified by buildah bud --root
   create-and-push-image:
-  #ci-create-container-image:
-  #  name: Create Container Image
     needs: ci-package-application
     name: Create and Push Container Image
     runs-on: ubuntu-latest
@@ -65,19 +63,11 @@ jobs:
           containerfiles: |
             ./Containerfile
 
-
-  #ci-push-container-image-to-repository:
-  #  name: Push Container Image to Repository
-  #  needs: ci-create-container-image
-  #  runs-on: ubuntu-latest
-  #  steps:
       - name: CI - Push Container Image
         id: push-container-image
         uses: redhat-actions/push-to-registry@v2
         with:
           registry: quay.io/dwinchell_redhat
-          #image: ${{ needs.ci-create-container-image.outputs.image }}
-          #tags: ${{ needs.ci-create-container-image.outputs.tags }}
           image: ${{ steps.buildah-build.outputs.image }}
           tags: ${{ steps.buildah-build.outputs.tags }}
           username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
@@ -85,7 +75,6 @@ jobs:
 
   deploy-or-update-environment-dev:
     name: Deploy or Update Environment - DEV
-    #needs: ci-push-container-image-to-repository
     needs: create-and-push-image
     runs-on: ubuntu-latest
     steps:
