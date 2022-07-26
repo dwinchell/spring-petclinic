@@ -1,6 +1,6 @@
 ---
-# This Github workflow will run jobs to build java-app.
-name: spring-petclinic
+# This reusable workflow builds a containerized Maven application and then deploys it using ArgoCD and Helm.
+name: java-maven-minimal
 on:
   push:
   workflow_dispatch:
@@ -135,6 +135,7 @@ jobs:
       - name: ArgoCD - Create or Update Application and Sync
         run: |
           ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+          set -x
           APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
           OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
           # TODO: make it work for a private repository
