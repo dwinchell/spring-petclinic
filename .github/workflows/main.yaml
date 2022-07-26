@@ -17,7 +17,10 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     steps:
-
+      - name: Echo branch name
+        run: |
+          echo ${GITHUB_REF_NAME}
+ 
       - uses: actions/checkout@v3
 
       - name: Setup Java
@@ -58,8 +61,8 @@ jobs:
         id: buildah-build
         uses: redhat-actions/buildah-build@v2
         with:
-          image: spring-petclinic # TODO: hard coded
-          #image: ${{ github.event.repository.name }}
+          #image: spring-petclinic # TODO: hard coded
+          image: ${{ github.event.repository.name }}
           tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile
@@ -82,20 +85,21 @@ jobs:
       - name: Clone Ops Repo
         uses: actions/checkout@v3
         with:
-          repository: dwinchell/spring-petclinic-ops #TODO
+          repository: ${{ env.GITHUB_REPOSITORY }}-ops #TODO: parameterize in workflow call
           token: ${{ secrets.OPS_REPO_TOKEN }}
           path: ops-repository/ #TODO
 
       - name: Checkout Ops Feature Branch
         run: |
           cd ops-repository/ #TODO
-          git checkout -B ${{ env.GITHUB_REF_NAME }} # TODO
+          git checkout -B ${GITHUB_REF_NAME} # TODO
           #git checkout -B feature/vanilla # TODO
 
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO: unhardcode. parameterize in workflow call.
+          #cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' '${{ github.event.repository.name }}-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO: unhardcode. parameterize in workflow call.
 
       - name: Push to Ops Repo
         run: |
@@ -103,7 +107,7 @@ jobs:
           git commit -am "CI/CD Pipeline - updated image tag"
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
-          git push -u origin ${{ env.GITHUB_REF_NAME }} #TODO: replace other feature/vanilla hardcoding with this
+          git push -u origin ${GITHUB_REF_NAME} #TODO: replace other feature/vanilla hardcoding with this
 
       - name: Cache Tools
         uses: actions/cache@v3
