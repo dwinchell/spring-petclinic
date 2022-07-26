@@ -69,7 +69,6 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ github.repository }}
-          MY_GITHUB_REPOSITORY: 
           tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile
@@ -137,7 +136,9 @@ jobs:
           ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
           set -x
           APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
+          echo "App Name: ${APP_NAME}"
           OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
+          echo "Ops Repo Name: ${OPS_REPO_NAME}"
           # TODO: make it work for a private repository
           ./bin/argocd --insecure app create \
             ${APP_NAME} \
