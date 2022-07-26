@@ -11,13 +11,10 @@ permissions:
   pull-requests: write
 
 jobs:
-
-
   ci-package-application:
     name: Package Application
     runs-on: ubuntu-latest
     steps:
-
       - uses: actions/checkout@v3
 
       - name: Setup Java
@@ -34,7 +31,6 @@ jobs:
         with:
           name: maven-output
           path: target/
-          
 
   #TODO: split into two jobs. Try caching dir specified by buildah bud --root
   create-and-push-image:
