@@ -97,7 +97,7 @@ jobs:
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:latest"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+          cmd: yq -i '.image.tag = "quay.io/dwinchel_redhat/spring-petclinic:latest-ZZZZZZZZZZZ"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
 
       - name: Push to Ops Repo
         run: |
