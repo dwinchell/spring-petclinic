@@ -114,9 +114,9 @@ jobs:
       - name: Push to Ops Repo
         run: |
           cd ops-repository/
-          git commit -am "CI/CD Pipeline - updated image tag"
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
+          git commit -am "CI/CD Pipeline - updated image tag"
           git push -u origin ${GITHUB_REF_NAME} #TODO: replace other feature/vanilla hardcoding with this
 
       - name: Cache Tools
