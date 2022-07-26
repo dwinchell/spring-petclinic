@@ -19,9 +19,7 @@ jobs:
     steps:
       - name: Echo stuff
         run: |
-          echo ${MY_GITHUB_REPOSITORY}
-          echo ${MY_GITHUB_REF_NAME}
-          APP_NAME=$(echo "${MY_GITHUB_REPOSITORY}-${MY_GITHUB_REF_NAME}" | sed 's!/!-!g')
+          APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
           OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
           echo ${OPS_REPO_NAME}
         env:
