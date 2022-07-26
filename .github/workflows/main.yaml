@@ -44,6 +44,7 @@ jobs:
     name: Create and Push Container Image
     runs-on: ubuntu-latest
     outputs:
+      image: ${{ steps.buildah-build.outputs.registry }}
       image: ${{ steps.buildah-build.outputs.image }}
       tags: ${{ steps.buildah-build.outputs.tags }}
     steps:
