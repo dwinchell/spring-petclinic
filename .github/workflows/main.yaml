@@ -103,7 +103,7 @@ jobs:
           git commit -am "CI/CD Pipeline - updated image tag"
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
-          git push -u origin ${{ env.GITHUB_REF }} #TODO: replace other feature/vanilla hardcoding with this
+          git push -u origin ${{ env.ITHUB_REF_NAME }} #TODO: replace other feature/vanilla hardcoding with this
 
       - name: Cache Tools
         uses: actions/cache@v3
