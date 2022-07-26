@@ -97,7 +97,7 @@ jobs:
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "${{ needs.ci-create-container-image.outputs.image }}:${{ needs.ci-create-container-image.outputs.tags }}"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.image }}:${{ needs.create-and-push-image.outputs.tags }}"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
 
       - name: Push to Ops Repo
         run: |
