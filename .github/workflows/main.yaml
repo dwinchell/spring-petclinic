@@ -59,6 +59,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: spring-petclinic # TODO: hard coded
+          #image: ${{ github.event.repository.name }}
           tags: ${{ github.sha }}
           containerfiles: |
             ./Containerfile
@@ -83,12 +84,13 @@ jobs:
         with:
           repository: dwinchell/spring-petclinic-ops #TODO
           token: ${{ secrets.OPS_REPO_TOKEN }}
-          path: spring-petclinic-ops #TODO
+          path: ops-repository/ #TODO
 
       - name: Checkout Ops Feature Branch
         run: |
-          cd spring-petclinic-ops #TODO
-          git checkout -B feature/vanilla # TODO
+          cd ops-repository/ #TODO
+          git checkout -B ${{ env.GITHUB_REF }} # TODO
+          #git checkout -B feature/vanilla # TODO
 
       - name: Update Image Tag
         uses: mikefarah/yq@master
@@ -97,6 +99,7 @@ jobs:
 
       - name: Push to Ops Repo
         run: |
+          cd ops-repository/
           git commit -am "CI/CD Pipeline - updated image tag"
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
