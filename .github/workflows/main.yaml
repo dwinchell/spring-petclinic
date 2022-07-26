@@ -83,8 +83,12 @@ jobs:
         with:
           repository: dwinchell/spring-petclinic-ops #TODO
           token: ${{ secrets.OPS_REPO_TOKEN }}
-          ref: ${{ env.GITHUB_REF }} #TODO: deal with -ops feature branch already existing OR not existing # TODO: replace other feature/vanilla hardcoding with this
           path: spring-petclinic-ops #TODO
+
+      - name: Checkout Ops Feature Branch
+        run: |
+          cd spring-petclinic-ops #TODO
+          git checkout -B feature/vanilla # TODO
 
       - name: Update Image Tag
         uses: mikefarah/yq@master
@@ -93,12 +97,10 @@ jobs:
 
       - name: Push to Ops Repo
         run: |
-          cd spring-petclinic-ops #TODO
+          git commit -am "CI/CD Pipeline - updated image tag"
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
-          git checkout -B feature/vanilla # TODO
-          git commit -am "CI/CD Pipeline - updated image tag"
-          git push -u origin feature/vanilla #TODO
+          git push -u origin ${{ env.GITHUB_REF }} #TODO: replace other feature/vanilla hardcoding with this
 
       - name: Cache Tools
         uses: actions/cache@v3
