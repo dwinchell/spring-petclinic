@@ -47,6 +47,7 @@ jobs:
       registry: ${{ steps.buildah-build.outputs.registry }}
       image: ${{ steps.buildah-build.outputs.image }}
       tags: ${{ steps.buildah-build.outputs.tags }}
+      pushed-image-tag: ${{ steps.push-to-registry.outputs.registry-path }}
     steps:
       - uses: actions/checkout@v3
 
@@ -98,7 +99,7 @@ jobs:
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.registry }}/${{ needs.create-and-push-image.outputs.image }}:${{ needs.create-and-push-image.outputs.tags }}"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
+          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' 'spring-petclinic-ops/charts/spring-petclinic-deploy/values-DEV.yaml' #TODO
 
       - name: Push to Ops Repo
         run: |
