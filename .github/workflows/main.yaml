@@ -17,17 +17,6 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     steps:
-      - name: Echo stuff
-        run: |
-          APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
-          echo ${APP_NAME}
-          OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
-          echo ${OPS_REPO_NAME}
-        env:
-          MY_GITHUB_REPOSITORY: ${{ github.repository }}
-          MY_GITHUB_REF_NAME: ${{ github.ref_name }}
-          REPOSITORY_URL: ${{ github.repositoryUrl }}
- 
       - uses: actions/checkout@v3
 
       - name: Setup Java
