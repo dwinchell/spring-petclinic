@@ -18,13 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Echo stuff
-        run: |
-          OPS_REPO_NAME=$(echo "${SERVER_URL}/${GITHUB_REPOSITORY}-ops.git") # Currently only public -ops repos that can be cloned using https are supported
-          echo ${OPS_REPO_NAME}
-        env:
-          SERVER_URL: ${{ github.server_url }}
-
       - uses: actions/checkout@v3
 
       - name: Setup Java
