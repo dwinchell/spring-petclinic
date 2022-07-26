@@ -17,6 +17,14 @@ jobs:
     name: Package Application
     runs-on: ubuntu-latest
     steps:
+
+      - name: Echo stuff
+        run: |
+          OPS_REPO_NAME=$(echo "${SERVER_URL}/${GITHUB_REPOSITORY}") # Currently only public -ops repos that can be cloned using https are supported
+          echo ${OPS_REPO_NAME}
+        env:
+          SERVER_URL: ${{ github.server_url }}
+
       - uses: actions/checkout@v3
 
       - name: Setup Java
@@ -125,7 +133,8 @@ jobs:
           set -x
           APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
           echo "App Name: ${APP_NAME}"
-          OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
+          #OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
+          OPS_REPO_NAME=$(echo "${SERVER_URL}/${GITHUB_REPOSITORY}") # Currently only public -ops repos that can be cloned using https are supported
           echo "Ops Repo Name: ${OPS_REPO_NAME}"
           # TODO: make it work for a private repository
           ./bin/argocd --insecure app create \
@@ -150,6 +159,7 @@ jobs:
             ${APP_NAME}
         env:
           REPOSITORY_URL: ${{ github.repositoryUrl }}
+          SERVER_URL: ${{ github.server_url }}
 
         #TODO: Add outputs
         #    name='argocd-deployed-manifest',
