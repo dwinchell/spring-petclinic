@@ -47,7 +47,7 @@ jobs:
       registry: ${{ steps.buildah-build.outputs.registry }}
       image: ${{ steps.buildah-build.outputs.image }}
       tags: ${{ steps.buildah-build.outputs.tags }}
-      pushed-image-tag: ${{ steps.push-to-registry.outputs.registry-path }}
+      pushed-image-tag: ${{ steps.push-container-image.outputs.registry-path }}
     steps:
       - uses: actions/checkout@v3
 
@@ -72,6 +72,7 @@ jobs:
   #  runs-on: ubuntu-latest
   #  steps:
       - name: CI - Push Container Image
+        id: push-container-image
         uses: redhat-actions/push-to-registry@v2
         with:
           registry: quay.io/dwinchell_redhat
