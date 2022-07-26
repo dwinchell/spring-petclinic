@@ -93,18 +93,17 @@ jobs:
         with:
           repository: ${{ github.repository }}-ops #TODO: parameterize in workflow call
           token: ${{ secrets.OPS_REPO_TOKEN }}
-          path: ops-repository/ #TODO
+          path: ops-repository/ #TODO: make this a constant somehow (several occurances, one embedded in a string)
 
       - name: Checkout Ops Feature Branch
         run: |
-          cd ops-repository/ #TODO
+          cd ops-repository/
           git checkout -B ${GITHUB_REF_NAME} # TODO
-          #git checkout -B feature/vanilla # TODO
 
       - name: Update Image Tag
         uses: mikefarah/yq@master
         with:
-          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' 'ops-repository/charts/deploy/values-DEV.yaml' #TODO: unhardcode. parameterize in workflow call. document 'charts/deploy' convention
+          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' 'ops-repository/charts/deploy/values-DEV.yaml' #TODO: parameterize in workflow call, AND document 'charts/deploy' convention
         env:
           REPOSITORY_NAME: ${{ github.event.repository.name }}
 
@@ -114,7 +113,7 @@ jobs:
           git config --global user.email "cicd@example.com"
           git config --global user.name "CI/CD Pipeline"
           git commit -am "CI/CD Pipeline - updated image tag"
-          git push -u origin ${GITHUB_REF_NAME} #TODO: replace other feature/vanilla hardcoding with this
+          git push -u origin ${GITHUB_REF_NAME}
 
       - name: Cache Tools
         uses: actions/cache@v3
