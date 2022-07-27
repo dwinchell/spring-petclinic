@@ -14,13 +14,20 @@ jobs:
     name: Job 1
     runs-on: ubuntu-latest
     steps:
+      - name: Create Workflow Evidence File
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > workflow-evidence.json
+
       - name: Step 1
         run: |
           echo "Step 1"
 
-      - name: Step 2
+      - name: Create Report
         run: |
-          echo "Step 2"
+          cat workflow-evidence.json
+
+
 
   #job2:
   #  name: Job 2
