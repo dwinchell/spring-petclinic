@@ -28,7 +28,8 @@ jobs:
 
       - name: Create Report
         run: |
-          cat workflow-evidence.json
+          find workflow-evidence/
+          cat workflow-evidence/workflow-evidence.json
 
       - name: Upload Report to GitHub
         uses: actions/upload-artifact@v1
