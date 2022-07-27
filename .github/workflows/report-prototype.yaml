@@ -14,7 +14,7 @@ jobs:
     name: Job 1
     runs-on: ubuntu-latest
     steps:
-      - name: Setup
+      - name: Setup Report Directory
         run: mkdir workflow-report/
 
       - name: Create Workflow Evidence File
@@ -24,7 +24,12 @@ jobs:
 
       - name: Step 1
         run: |
-          echo "Step 1"
+          echo "Step 1" > step1-output.txt
+
+      - name: Step 1 Add to Report
+        run: |
+          mkdir -p workflow-report/step-1
+          cp step1-output.txt workflow-report/step1
 
       - name: Create Report
         run: |
@@ -36,15 +41,7 @@ jobs:
         with:
           name: workflow-report
           path: workflow-report/
-
-      - name: Upload Evidence to GitHub
-        uses: actions/upload-artifact@v1
-        with:
-          name: workflow-evidence
-          path: workflow-report/workflow-evidence.json
-
-
-
+  #
   #job2:
   #  name: Job 2
   #  needs: job1
