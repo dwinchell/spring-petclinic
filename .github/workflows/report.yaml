@@ -1,0 +1,155 @@
+---
+name: report-prototype
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  pull-requests: write
+
+jobs:
+  ci-package-application:
+    name: Package Application
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: maven
+
+      - name: Maven Package
+        run: mvn -DskipTests --batch-mode --update-snapshots package #TODO: enable tests
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: maven-output
+          path: target/
+
+  #TODO: split into two jobs. Try caching dir specified by buildah bud --root
+  create-and-push-image:
+    needs: ci-package-application
+    name: Create and Push Container Image
+    runs-on: ubuntu-latest
+    outputs:
+      registry: ${{ steps.buildah-build.outputs.registry }}
+      image: ${{ steps.buildah-build.outputs.image }}
+      tags: ${{ steps.buildah-build.outputs.tags }}
+      pushed-image-tag: ${{ steps.push-container-image.outputs.registry-path }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/download-artifact@v1
+        with:
+          name: maven-output
+          path: target/
+
+      - name: CI - Create Container Image
+        id: buildah-build
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ github.repository }}
+          tags: ${{ github.sha }}
+          containerfiles: |
+            ./Containerfile
+
+      - name: CI - Push Container Image
+        id: push-container-image
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          registry: quay.io/dwinchell_redhat
+          image: ${{ steps.buildah-build.outputs.image }}
+          tags: ${{ steps.buildah-build.outputs.tags }}
+          username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
+          password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+
+  deploy-or-update-environment-dev:
+    name: Deploy or Update Environment - DEV
+    needs: create-and-push-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone Ops Repo
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ github.repository }}-ops #TODO: parameterize in workflow call
+          token: ${{ secrets.OPS_REPO_TOKEN }}
+          path: ops-repository/ #TODO: make this a constant somehow (several occurances, one embedded in a string)
+
+      - name: Checkout Ops Feature Branch
+        run: |
+          cd ops-repository/
+          git checkout -B ${GITHUB_REF_NAME} # TODO
+
+      - name: Update Image Tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.image.tag = "${{ needs.create-and-push-image.outputs.pushed-image-tag }}"' 'ops-repository/charts/deploy/values-DEV.yaml' #TODO: parameterize in workflow call, AND document 'charts/deploy' convention
+        env:
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
+
+      - name: Push to Ops Repo
+        run: |
+          cd ops-repository/
+          git config --global user.email "cicd@example.com"
+          git config --global user.name "CI/CD Pipeline"
+          git commit -am "CI/CD Pipeline - updated image tag"
+          git push -u origin ${GITHUB_REF_NAME}
+
+      - name: Cache Tools
+        uses: actions/cache@v3
+        with:
+          path: ./bin
+          key: tools
+
+      - name: Download ArgoCD CLI
+        run: |
+          if [ ! -d ./bin ]; then mkdir bin; fi
+          if [ ! -f ./bin/argocd ]; then
+            curl -L https://github.com/argoproj/argo-cd/releases/download/v2.4.3/argocd-linux-amd64 -o ./bin/argocd
+            chmod +x bin/argocd 
+          fi
+          ./bin/argocd --insecure version --client #TODO: tls ca
+
+      - name: ArgoCD - Create or Update Application and Sync
+        run: |
+          ./bin/argocd --insecure login ${{ secrets.ARGOCD_HOST }} --username ${{ secrets.ARGOCD_USERNAME }} --password ${{ secrets.ARGOCD_PASSWORD }}
+          set -x
+          APP_NAME=$(echo "${GITHUB_REPOSITORY}-${GITHUB_REF_NAME}" | sed 's!/!-!g')
+          echo "App Name: ${APP_NAME}"
+          #OPS_REPO_NAME=$(echo "${REPOSITORY_URL}" | sed 's/\.git$/-ops.git/')
+          OPS_REPO_NAME=$(echo "${SERVER_URL}/${GITHUB_REPOSITORY}-ops.git") # Currently only public -ops repos that can be cloned using https are supported
+          echo "Ops Repo Name: ${OPS_REPO_NAME}"
+          # TODO: make it work for a private repository
+          ./bin/argocd --insecure app create \
+            ${APP_NAME} \
+            --repo=${OPS_REPO_NAME} \
+            --revision=${GITHUB_REF_NAME} \
+            --path=charts/deploy/ \
+            --dest-server=https://kubernetes.default.svc \
+            --dest-namespace=${APP_NAME} \
+            --sync-policy=automated \
+            --project=default \
+            --values=values-DEV.yaml \
+            --upsert
+          ./bin/argocd --insecure app wait \
+              ${APP_NAME} \
+              --operation \
+              --timeout 60
+          ./bin/argocd --insecure app sync \
+            --async \
+            --timeout 60 \
+            --retry-limit 30 \
+            ${APP_NAME}
+        env:
+          REPOSITORY_URL: ${{ github.repositoryUrl }}
+          SERVER_URL: ${{ github.server_url }}
+
+        #TODO: Add outputs
+        #    name='argocd-deployed-manifest',
+        #    name='deployed-host-urls',
+
