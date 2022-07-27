@@ -29,7 +29,7 @@ jobs:
       - name: Step 1 Add to Report
         run: |
           mkdir -p workflow-report/step-1
-          cp step1-output.txt workflow-report/step1
+          cp step1-output.txt workflow-report/step-1
 
       - name: Create Report
         run: |
