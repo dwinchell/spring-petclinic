@@ -20,7 +20,7 @@ jobs:
       - name: Create Workflow Evidence File
         uses: mikefarah/yq@master
         with:
-          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > evidence/workflow-evidence.json
+          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > workflow-evidence/workflow-evidence.json
 
       - name: Step 1
         run: |
