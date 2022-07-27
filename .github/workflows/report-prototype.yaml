@@ -41,7 +41,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: workflow-evidence
-          path: workflow-evidence/workflow-evidence.json
+          path: workflow-report/workflow-evidence.json
 
 
 
