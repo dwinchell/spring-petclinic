@@ -2,7 +2,6 @@
 # This reusable workflow builds a containerized Maven application and then deploys it using ArgoCD and Helm.
 name: java-maven-minimal
 on:
-  push:
   workflow_dispatch:
 concurrency:
   group: ${{ github.ref }}
