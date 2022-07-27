@@ -17,10 +17,10 @@ jobs:
       - name: Setup Report Directory
         run: mkdir workflow-report/
 
-      - name: Create Workflow Evidence File
+      - name: Generate Workflow Evidence Headers
         uses: mikefarah/yq@master
         with:
-          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > workflow-report/workflow-evidence.json
+          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > workflow-report/workflow-evidence-headers.json
 
       - name: Step 1
         run: |
@@ -36,11 +36,11 @@ jobs:
         with:
           cmd: yq -e -o json -n '.workflow.step-1.attestations.file-name = "step1-output.txt"' > workflow-report/step-1/step-evidence.json
 
-
-      #- name: Gather Evidence
-      # run: |
-      #    find workflow-report/
-      #    cat workflow-report/workflow-evidence.json
+      #TODO: wildcard
+      - name: Collect Workflow Evidence
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' workflow-evidence.json step-1/step-evidence.json > workflow-report/workflow-evidence.json
 
       - name: Upload Report to GitHub
         uses: actions/upload-artifact@v1
