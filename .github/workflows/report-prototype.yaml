@@ -40,7 +40,7 @@ jobs:
       - name: Collect Workflow Evidence
         uses: mikefarah/yq@master
         with:
-          cmd: yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' workflow-report/workflow-evidence-headers.json step-1/step-evidence.json > workflow-report/workflow-evidence.json
+          cmd: yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' workflow-report/workflow-evidence-headers.json workflow-report/step-1/step-evidence.json > workflow-report/workflow-evidence.json
 
       - name: Upload Report to GitHub
         uses: actions/upload-artifact@v1
