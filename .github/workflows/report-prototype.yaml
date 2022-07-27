@@ -26,7 +26,12 @@ jobs:
         run: |
           echo "Step 1" > step1-output.txt
 
-      - name: Step 1 Add to Report
+      - name: Step 1 - Generate Evidence
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -e -o json -n '.workflow.step-1.attestations.file-name = "step1-output.txt"' > workflow-report/step-1/step-evidence.json
+
+      - name: Step 1 - Add to Report
         run: |
           mkdir -p workflow-report/step-1
           cp step1-output.txt workflow-report/step-1
@@ -41,6 +46,7 @@ jobs:
         with:
           name: workflow-report
           path: workflow-report/
+
   #
   #job2:
   #  name: Job 2
