@@ -15,12 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup
-        run: mkdir workflow-evidence/
+        run: mkdir workflow-report/
 
       - name: Create Workflow Evidence File
         uses: mikefarah/yq@master
         with:
-          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > workflow-evidence/workflow-evidence.json
+          cmd: yq -e -o json -n '.apiVersion = "automated-governance/v1alpha1" | .kind = "WorkflowEvidence"' > workflow-report/workflow-evidence.json
 
       - name: Step 1
         run: |
@@ -28,14 +28,20 @@ jobs:
 
       - name: Create Report
         run: |
-          find workflow-evidence/
-          cat workflow-evidence/workflow-evidence.json
+          find workflow-report/
+          cat workflow-report/workflow-evidence.json
 
       - name: Upload Report to GitHub
         uses: actions/upload-artifact@v1
         with:
+          name: workflow-report
+          path: workflow-report/
+
+      - name: Upload Evidence to GitHub
+        uses: actions/upload-artifact@v1
+        with:
           name: workflow-evidence
-          path: workflow-evidence/
+          path: workflow-evidence/workflow-evidence.json
 
 
 
